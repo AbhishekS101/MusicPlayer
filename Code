@@ -1,0 +1,59 @@
+try:
+    import tkinter
+except ImportError:
+    import Tkinter as tkinter
+
+from tkinter import *
+import pygame
+import os
+
+mainWindow = tkinter.Tk()
+mainWindow.title('MUSIC PLAYER')
+mainWindow.geometry('500x200')
+mainWindow['padx'] = 8
+
+pygame.mixer.init()
+
+n = 0
+
+mainWindow.columnconfigure(0, weight=5)
+mainWindow.columnconfigure(1, weight=1)
+mainWindow.columnconfigure(2, weight=1)
+mainWindow.rowconfigure(0, weight=1)
+mainWindow.rowconfigure(1, weight=1)
+mainWindow.rowconfigure(2, weight=5)
+mainWindow.rowconfigure(3, weight=1)
+mainWindow.rowconfigure(4, weight=1)
+mainWindow.rowconfigure(5, weight=1)
+
+
+def start_stop():
+    global n
+    n = n + 1
+    if n == 1:
+        song_name = songs_listbox.get()
+        pygame.mixer_music.load(song_name)
+        pygame.mixer_music.play(0)
+
+    elif (n%2) == 0:
+        pygame.mixer_music.pause()
+
+    elif (n%2) != 0:
+        pygame.mixer_music.unpause()
+
+
+label = tkinter.Label(mainWindow, text="MUSIC PLAYER", font='times 20')
+label.grid(row=0, column=0, columnspan=3, sticky='nw')
+
+start = tkinter.Button(mainWindow, text="START", font='times 20', command=start_stop)
+start.grid(row=5, column=1, columnspan=1)
+stop = tkinter.Button(mainWindow, text="STOP", font='times 20', command=start_stop)
+stop.grid(row=5, column=2, columnspan=1, sticky='ew')
+
+songs_list = os.listdir()
+songs_listbox = tkinter.StringVar(mainWindow)
+songs_listbox.set('Select Songs')
+menu = tkinter.OptionMenu(mainWindow, songs_listbox, *songs_list)
+menu.grid(row=2, column=0, columnspan=100, sticky='w')
+
+mainWindow.mainloop()
